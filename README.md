@@ -2,7 +2,7 @@
 
 Ejemplos de las prácticas de testing del curso TestingAI sobre MiniModa, una tienda online ficticia ([sitio](https://minimoda-navy.vercel.app/)). Este repo no incluye el código de esa tienda.
 
-| Carpeta | Práctica | Qué muestra |
+| Carpeta | Práctica | Contenido |
 |---------|----------|-------------|
 | [clase-01/](clase-01/README.md) | Clase 1: casos del registro con IA | Plantilla de entrega (`practica.md`) y capturas de ejemplo de los casos cargados en Qase |
 | [auditoria-agente-minimoda/](auditoria-agente-minimoda/) | Clase 3: hackear una IA sin escribir código | Auditoría resuelta del Asistente MiniModa: 6 hallazgos, casos de prueba y evidencias |

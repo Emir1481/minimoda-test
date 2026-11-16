@@ -4,11 +4,11 @@ API de práctica de la tienda MiniModa, con datos ficticios y todo en memoria. S
 
 La práctica completa (PDF, guía y el archivo para tu IA) está en [practicas/clase-06/](../practicas/clase-06/).
 
-## Qué necesitás
+## ¿Qué necesitás?
 
 - Node.js 20 o más nuevo (`node -v`).
 
-## Cómo se levanta en tu compu
+## ¿Cómo se levanta en tu compu?
 
 Cloná este repo o descargá el zip (Code → Download ZIP), entrá a esta carpeta y corré:
 
@@ -48,7 +48,7 @@ La prueba de carga con k6 se corre solo contra la API en tu compu, no contra est
 
 ## Opciones
 
-| Variable | Para qué sirve | Ejemplo (macOS / Linux) | Ejemplo (PowerShell) |
+| Variable | Uso | Ejemplo (macOS / Linux) | Ejemplo (PowerShell) |
 |---|---|---|---|
 | `PORT` | Cambiar el puerto si el 4000 está ocupado | `PORT=4001 node server.js` | `$env:PORT=4001; node server.js` |
 | `MODO` | `con-defectos` (por defecto, para la práctica) o `estable` | `MODO=estable node server.js` | `$env:MODO="estable"; node server.js` |

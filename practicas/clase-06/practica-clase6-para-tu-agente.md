@@ -19,17 +19,17 @@ Sos un asistente de práctica de testing de APIs y de carga. Seguí estas reglas
 
 ---
 
-## Qué es, para qué sirve y qué lográs
+## ¿Qué es, para qué sirve y qué lográs?
 
-- **Qué es:** un solo flujo sobre la MiniModa API. Primero automatizás la prueba funcional desde el contrato y después automatizás la prueba de carga. Podés usar la API en tu compu o, para Swagger y las pruebas funcionales, la instancia en línea. La carga con k6 se corre solo en tu compu.
-- **Para qué sirve:** la carga solo dice algo útil sobre una API que ya funciona. Por eso primero se revisa el contrato y después se mide.
-- **Qué lográs:** un PR dentro de tu repo, sin mergear, con el informe, la colección que corre por línea de comandos, el script de k6 con sus resultados y los issues enlazados. Queda en tu portafolio.
+- **¿Qué es?** un solo flujo sobre la MiniModa API. Primero automatizás la prueba funcional desde el contrato y después automatizás la prueba de carga. Podés usar la API en tu compu o, para Swagger y las pruebas funcionales, la instancia en línea. La carga con k6 se corre solo en tu compu.
+- **¿Para qué sirve?** la carga solo dice algo útil sobre una API que ya funciona. Por eso primero se revisa el contrato y después se mide.
+- **¿Qué lográs?** un PR dentro de tu repo, sin mergear, con el informe, la colección que corre por línea de comandos, el script de k6 con sus resultados y los issues enlazados. Queda en tu portafolio.
 
 **Tiempo en clase:** 31 minutos. Lo que no termines se completa después en la misma rama.
 
-## Qué necesitás
+## ¿Qué necesitás?
 
-| Qué | Para qué | Cómo se consigue |
+| Recurso | Uso | Cómo se consigue |
 |---|---|---|
 | Node.js 20 o más nuevo | Correr la MiniModa API | Ya lo instalaste en la Clase 4. Comprobá con `node -v`. |
 | MiniModa API | La API que vas a probar | Está en [api/](https://github.com/Simonethg/minimoda-test/tree/main/api). Cloná el repo o descargá el zip y entrá a `api`. También está en línea: [Swagger](https://minimoda-api-test.onrender.com/docs). |
@@ -68,7 +68,7 @@ Si nadie la usó en un rato, el primer pedido puede tardar unos segundos en desp
 - **Issues en GitHub,** en tu propio repo.
 - Si el contrato no dice nada sobre algo, no es un defecto: va a la sección «Preguntas para el equipo» del informe.
 
-## Qué vas a entregar
+## ¿Qué vas a entregar?
 
 ```
 clase-06/
@@ -114,7 +114,10 @@ Más **2 issues** con la etiqueta `api` (y uno `performance` si falló un umbral
    - 1 de secuencia (crear algo y después leerlo);
    - 1 de idempotencia: `POST /pedidos` dos veces con el mismo encabezado `Idempotency-Key` y el mismo cuerpo;
    - 1 de formato de error (que el error tenga los campos del esquema `Error`).
-3. Revisá cada fila: ¿el código esperado está en la sección `responses` de ese endpoint? ¿La sección del contrato que cita la IA existe? Lo que la IA marcó como A CONFIRMAR va a «Preguntas».
+3. Revisá cada fila:
+   - ¿El código esperado está en `responses` de ese endpoint?
+   - ¿Existe la sección del contrato que cita la IA?
+   Lo que la IA marcó como A CONFIRMAR va a «Preguntas».
 4. Pegá los 6 casos en la sección **1. Casos** del informe.
 
 **Para el caso de idempotencia** necesitás un carrito con un producto: `POST /carritos` → `POST /carritos/{id}/items` con `{"productoId": 3, "cantidad": 1}` → `POST /pedidos` con `{"carritoId": "...", "email": "ana@ejemplo.com", "tarjeta": "4111111111111111"}` y el encabezado `Idempotency-Key: clase6-001`. Después repetís exactamente la misma solicitud.
@@ -145,9 +148,9 @@ test("404 si el producto no existe", function () {
 });
 ```
 
-**Revisá cada aserción contra Swagger:** el valor esperado tiene que salir del contrato. Si la IA copió lo que la API respondió, corregilo (es el ejemplo 1 de la clase).
+**Revisá cada aserción contra Swagger:** el valor esperado tiene que salir del contrato. Si la IA copió la respuesta de la API, corregilo (es el ejemplo 1 de la clase).
 
-**Sumá una solicitud más:** `GET {{baseUrl}}/productos/buscar?q=remera` con dos aserciones: estado 200 y que `productos` sea una lista. Es el endpoint que vas a cargar en el paso 6.
+**Sumá una solicitud más:** `GET {{baseUrl}}/productos/buscar` (parámetro `q=remera`) con dos aserciones: estado 200 y que `productos` sea una lista. Es el endpoint que vas a cargar en el paso 6.
 
 **Listo si:** los 6 casos (más la búsqueda) tienen aserciones que citan el contrato.
 
@@ -206,7 +209,7 @@ El **perfil de carga** es cuántos usuarios virtuales (VU), cómo suben, cuánto
 
 | Campo | Valor |
 |---|---|
-| Endpoint | `GET /productos/buscar?q=remera` |
+| Endpoint | `GET /productos/buscar` (parámetro `q=remera`) |
 | Rampa | de 0 a N usuarios en 10 s |
 | Sostenido | 30 s |
 | Bajada | 5 s |
@@ -263,7 +266,9 @@ k6 run -e VUS=20 carga.js | Out-File resultados/resumen-20-vu.txt
 
 ## Paso 9 · Conclusión y PR (2 min, o después de clase)
 
-1. Pasale a tu IA los tres resúmenes con el **prompt 5**. Revisá cada número contra el archivo: ¿sale de la línea que dice la IA?
+1. Pasale a tu IA los tres resúmenes con el **prompt 5**. Revisá cada número contra el archivo.
+
+   ¿Sale del archivo?
 2. Escribí la conclusión **con números y límites**. Ejemplo de forma: «Con 5 VU el p95 fue X ms; con 20 VU fue Y ms, por encima del umbral de 300 ms. Tasa de error: Z %. k6 y la API corrieron en la misma compu, así que sirve para comparar entre corridas, no para predecir producción.»
 3. Si falló un umbral, abrí un issue con la etiqueta `performance`, con el perfil, el umbral y los números.
 4. Subí todo y abrí el PR dentro de tu repo, **sin mergear**:
@@ -318,7 +323,7 @@ Comando: `...` · Resultado: X de Y aserciones pasaron · Salida: resultados/col
 Son ejemplos: adaptalos a tu caso. Sirven para cualquier chat o agente.
 
 **Prompt 1 · Del contrato a casos**
-> Actuá como tester de APIs. Te paso el contrato OpenAPI de la API de práctica de MiniModa. Armá una tabla de condiciones de prueba para `POST /carritos/{id}/items`, `POST /pedidos` (con y sin `Idempotency-Key`) y `GET /productos` con estas columnas: id, tipo (positivo, negativo, valor límite, secuencia, idempotencia o formato de error), solicitud (método, ruta y cuerpo), código esperado, campos y tipos esperados en la respuesta, y la sección del contrato que respalda el resultado esperado. Si el contrato no define un comportamiento, marcá la celda como A CONFIRMAR y agregalo a una lista de preguntas para el equipo. Hasta 10 filas, ordenadas por riesgo.
+> Actuá como tester de APIs. Te paso el contrato OpenAPI de la API de práctica de MiniModa. Armá una tabla de condiciones de prueba para `POST /carritos/{id}/items`, `POST /pedidos` (con y sin `Idempotency-Key`) y `GET /productos` con estas columnas: id, tipo (positivo, negativo, valor límite, secuencia, idempotencia o formato de error), solicitud (método, ruta y cuerpo), código esperado, campos y tipos esperados en la respuesta, y la sección del contrato que respalda el resultado esperado. Si el contrato no define un comportamiento, marcá la celda A CONFIRMAR y sumalo a la lista de dudas del equipo. Hasta 10 filas, ordenadas por riesgo.
 
 **Prompt 2 · De casos a aserciones**
 > Para estas 6 filas, escribí los scripts de test de Bruno (o de Postman) que validen el código de estado, el tipo de cada campo y el texto del mensaje de error. Tomá los valores esperados del contrato. La respuesta que te pego sirve solo para ver la estructura. Explicá en una línea qué comprueba cada aserción.
@@ -327,7 +332,7 @@ Son ejemplos: adaptalos a tu caso. Sirven para cualquier chat o agente.
 > Con esta solicitud en curl, la respuesta obtenida y la sección del contrato, redactá un issue de GitHub con título, pasos para reproducir, resultado esperado (citando el contrato), resultado obtenido, impacto para quien consume la API y entorno (versión y modo de la API). Proponé una severidad y explicá en una línea por qué, para que yo la confirme.
 
 **Prompt 4 · Del perfil al script**
-> Escribí un script de k6 (JavaScript de k6, sin módulos de Node.js) para este perfil. Objetivo: comprobar que `GET /productos/buscar?q=remera` mantiene p95 < 300 ms con la carga esperada. Rampa de 0 a 20 usuarios virtuales en 10 s, 30 s sostenidos y bajada en 5 s (y la opción de correrlo con 1 y 5 usuarios por variable de entorno). Pausa de 1 s entre iteraciones. Checks: estado 200 y que `productos` sea una lista (las mismas dos aserciones que uso en mi colección). Umbrales: `http_req_failed` < 1 % y `p(95)` < 300 ms. `BASE_URL` por variable de entorno, con `http://localhost:4000` por defecto. Comentá cada bloque en español.
+> Escribí un script de k6 (JavaScript de k6, sin módulos de Node.js) para este perfil. Objetivo: comprobar que `GET /productos/buscar` (parámetro `q=remera`) mantiene p95 < 300 ms con la carga esperada. Rampa de 0 a 20 usuarios virtuales en 10 s, 30 s sostenidos y bajada en 5 s (y la opción de correrlo con 1 y 5 usuarios por variable de entorno). Pausa de 1 s entre iteraciones. Checks: estado 200 y que `productos` sea una lista (las mismas dos aserciones que uso en mi colección). Umbrales: `http_req_failed` < 1 % y `p(95)` < 300 ms. `BASE_URL` por variable de entorno, con `http://localhost:4000` por defecto. Comentá cada bloque en español.
 
 **Prompt 5 · Del resumen a la conclusión**
 > Te paso el resumen de k6 de tres corridas, con 1, 5 y 20 usuarios virtuales. Armá una tabla comparativa con p90, p95, tasa de error y solicitudes por segundo, e indicá de qué línea del resumen sale cada número. Después proponé 2 hipótesis sobre la diferencia y una prueba que confirme o descarte cada una. Al final, decí qué conclusiones no se pueden sacar porque k6 y la API corrieron en la misma máquina.
