@@ -31,9 +31,9 @@ Para cerrar la API: `Ctrl + C` en la terminal.
 
 También está disponible en:
 
-- API: https://minimoda-api.onrender.com
-- Swagger: https://minimoda-api.onrender.com/docs
-- Contrato: https://minimoda-api.onrender.com/openapi.json
+- API: https://minimoda-api-test.onrender.com
+- Swagger: https://minimoda-api-test.onrender.com/docs
+- Contrato: https://minimoda-api-test.onrender.com/openapi.json
 
 Si nadie la usó en un rato, el primer pedido puede tardar unos segundos en despertarla. Los datos viven en memoria y se reinician cuando la instancia se apaga.
 

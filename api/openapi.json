@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://minimoda-api.onrender.com",
+      "url": "https://minimoda-api-test.onrender.com",
       "description": "publicada"
     },
     {
