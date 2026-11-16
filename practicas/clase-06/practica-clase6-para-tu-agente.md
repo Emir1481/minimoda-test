@@ -13,9 +13,10 @@ Sos un asistente de práctica de testing de APIs y de carga. Seguí estas reglas
 4. **El contrato es el oráculo.** El resultado esperado sale de `openapi.json` (citá la ruta, por ejemplo `paths./productos/{id}.get.responses.404`). Si el contrato no define un comportamiento, proponé anotarlo en «Preguntas para el equipo», no como defecto.
 5. **Caja negra.** No pidas ni leas el código de la API (`server.js`). Trabajá solo con el contrato, Swagger y las respuestas.
 6. **Carga solo contra localhost.** La persona puede usar la API en línea (https://minimoda-api-test.onrender.com) para Swagger y las pruebas funcionales. No propongas correr k6 contra esa URL ni contra ninguna otra que no sea la API local.
-7. **La persona decide.** No abras issues ni PR, ni hagas commits, sin que la persona lo confirme. Proponé y esperá su OK.
-8. **Al terminar cada paso,** mostrá el criterio «Listo si» de ese paso y preguntá si quiere seguir con el próximo.
-9. Usá español rioplatense, con palabras simples. Si usás un término técnico nuevo, definilo en una línea.
+7. **Si la instancia en línea no responde** después de esperar un minuto y reintentar `/health`, ayudá a la persona a levantar la API en su compu, un paso a la vez, con la sección «Si la API en línea no responde». Pedile la salida de cada comando. No asumas que ya tiene Node, el repo clonado o el puerto 4000 libre.
+8. **La persona decide.** No abras issues ni PR, ni hagas commits, sin que la persona lo confirme. Proponé y esperá su OK.
+9. **Al terminar cada paso,** mostrá el criterio «Listo si» de ese paso y preguntá si quiere seguir con el próximo.
+10. Usá español rioplatense, con palabras simples. Si usás un término técnico nuevo, definilo en una línea.
 
 ---
 
@@ -58,7 +59,7 @@ También podés descargar el zip del repo en GitHub (Code → Download ZIP), des
 - Swagger: https://minimoda-api-test.onrender.com/docs
 - Contrato: https://minimoda-api-test.onrender.com/openapi.json
 
-Si nadie la usó en un rato, el primer pedido puede tardar unos segundos en despertarla. Los datos viven en memoria y se reinician cuando la instancia se apaga. La prueba de carga con k6 (pasos 6 a 8, sobre todo la de 20 usuarios virtuales) se corre solo contra la API en tu compu.
+Si nadie la usó en un rato, el plan gratuito se apaga y el primer pedido puede tardar 30 a 60 segundos en despertarla: esperá un minuto y volvé a pedir `/health`. Si después de eso sigue sin responder, andá a «Si la API en línea no responde» y levantá tu propia copia en tu compu (ahí también está el prompt para tu IA). Los datos viven en memoria y se reinician cuando la instancia se apaga. La prueba de carga con k6 (pasos 6 a 8, sobre todo la de 20 usuarios virtuales) se corre solo contra la API en tu compu.
 
 ## Reglas de la práctica
 
@@ -96,7 +97,7 @@ Más **2 issues** con la etiqueta `api` (y uno `performance` si falló un umbral
    node server.js
    ```
    Si el puerto 4000 está ocupado: `PORT=4001 node server.js` (en PowerShell: `$env:PORT=4001; node server.js`) y usá ese puerto en todo lo que sigue.
-3. Abrí `http://localhost:4000/docs`. Es Swagger UI: muestra el contrato y deja probar cada endpoint. Funciona sin internet. Si preferís la instancia en línea, abrí https://minimoda-api-test.onrender.com/docs (puede tardar unos segundos en despertar).
+3. Abrí `http://localhost:4000/docs`. Es Swagger UI: muestra el contrato y deja probar cada endpoint. Funciona sin internet. Si preferís la instancia en línea, abrí https://minimoda-api-test.onrender.com/docs. Si tarda, esperá un minuto y reintentá `/health`; si sigue sin responder, andá a «Si la API en línea no responde».
 4. Abrí `GET /health`, tocá **Try it out** y después **Execute**. Tiene que responder `200` con `"modo": "con-defectos"`.
 
 ![Swagger UI de la MiniModa API](practica-assets/minimoda-docs-recorte.png)
@@ -349,10 +350,37 @@ Son ejemplos: adaptalos a tu caso. Sirven para cualquier chat o agente.
 | Problema | Qué hacer |
 |---|---|
 | `EADDRINUSE` al levantar la API | El puerto 4000 está ocupado: `PORT=4001 node server.js` y cambiá `baseUrl`. |
-| La instancia en línea tarda o no responde | Esperá unos segundos y recargá: se apaga si nadie la usó. Para la carga, usá siempre la API en tu compu. |
+| La instancia en línea tarda o no responde | Esperá un minuto y volvé a pedir `/health`. Si sigue sin responder, andá a «Si la API en línea no responde» y levantá tu propia copia. La carga con k6 va siempre contra la API en tu compu. |
 | Querés empezar de cero los datos | `POST http://localhost:4000/reset` (desde Swagger o la colección). |
 | `postman collection run` pide iniciar sesión | Usá Newman con la colección exportada, que no pide cuenta. |
 | La corrida de 1 VU ya falla | Revisá la URL, que la API esté levantada y los `check` del script. |
 | En PowerShell no toma las variables | Escribilas como `$env:NOMBRE="valor"` antes del comando. |
+
+
+## Si la API en línea no responde
+
+La instancia en línea corre en un plan gratuito: si nadie la usó en un rato, se apaga y puede tardar 30 a 60 segundos en despertar. Esperá un minuto y volvé a pedir `https://minimoda-api-test.onrender.com/health`. Si sigue sin responder, levantá tu propia copia en tu compu (también la necesitás para la carga con k6).
+
+Hace falta Node.js 20 o más nuevo. Cloná o descargá [minimoda-test](https://github.com/Simonethg/minimoda-test), entrá a `api` y corré `MODO=con-defectos node server.js` (en Windows PowerShell: `$env:MODO="con-defectos"; node server.js`). Dejá la terminal abierta. Comprobá `http://localhost:4000/health` y `http://localhost:4000/docs`: `/health` tiene que responder 200 con `"modo": "con-defectos"`. Si el puerto 4000 está ocupado, usá `PORT=4001` (en PowerShell: `$env:PORT=4001`). En Bruno, Postman o k6, cambiá la URL base a `http://localhost:4000`.
+
+Si querés que tu IA te guíe, copiá este prompt y pegalo en el chat o agente que uses (ninguno es obligatorio):
+
+```
+Estoy haciendo la práctica de TestingAI (Clase 6) y la MiniModa API en línea no responde, después de esperar un minuto y reintentar https://minimoda-api-test.onrender.com/health. Necesito levantar una copia en mi compu.
+Guiame un paso a la vez. No asumas nada y no completes información que no te di: después de cada comando, pedime la salida antes de pasar al siguiente.
+El repo público es https://github.com/Simonethg/minimoda-test. Hace falta Node.js 20 o más nuevo. El puerto por defecto es 4000.
+Pasos, en este orden:
+1. Preguntame si uso macOS, Windows o Linux y adaptá los comandos.
+2. Pedime la salida de `node -v`. Si no tengo Node 20 o más nuevo, ayudame a instalarlo.
+3. Ayudame a clonar el repo (o a descomprimir el zip si ya lo descargué) y a entrar a la carpeta `api`.
+4. Indicame cómo levantar la API en modo con defectos, y que deje la terminal abierta:
+   - macOS o Linux: `MODO=con-defectos node server.js`
+   - Windows PowerShell: `$env:MODO="con-defectos"; node server.js`
+5. Pedime que compruebe `http://localhost:4000/health` y `http://localhost:4000/docs`, y que te pase la respuesta de `/health`. Tiene que ser 200 con `"modo": "con-defectos"`.
+6. Si el puerto 4000 está ocupado, proponé `PORT=4001` (en PowerShell: `$env:PORT=4001`) y usá ese puerto en lo que sigue.
+7. Ayudame a cambiar la URL base de mi colección (Bruno o Postman) y, si ya tengo el script de k6, de `BASE_URL`, a `http://localhost:4000` (o al puerto que hayamos usado).
+
+No abras el archivo `server.js`: la API se prueba como caja negra, con el contrato en `/openapi.json` o en `/docs`. La prueba de carga con k6 se corre solo contra esta API en mi compu, nunca contra la instancia en línea ni contra sitios ajenos.
+```
 
 **Opcional:** si tenés el proyecto de Qase de la Clase 5, cargá 3 de los casos en una suite «API MiniModa».
