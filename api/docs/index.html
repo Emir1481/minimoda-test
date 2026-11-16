@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>MiniModa API · Swagger UI</title>
+  <link rel="icon" href="vendor/favicon-32x32.png">
+  <link rel="stylesheet" href="vendor/swagger-ui.css">
+  <style>body{margin:0}.topbar{display:none}</style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="vendor/swagger-ui-bundle.js"></script>
+  <script>
+    window.ui = SwaggerUIBundle({
+      url: '/openapi.json',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      tryItOutEnabled: false,
+      displayRequestDuration: true,
+      validatorUrl: null
+    });
+  </script>
+</body>
+</html>

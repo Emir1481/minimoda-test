@@ -1,0 +1,1060 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "MiniModa API",
+    "version": "1.0.0",
+    "description": "API de práctica de la tienda MiniModa para el curso TestingAI (AcademiaQA). Datos ficticios, todo en memoria. Las tarjetas son de prueba: 4111111111111111 aprueba y 4000000000000002 se rechaza. Para volver al estado inicial, `POST /reset`."
+  },
+  "servers": [
+    {
+      "url": "https://minimoda-api.onrender.com",
+      "description": "publicada"
+    },
+    {
+      "url": "http://localhost:4000",
+      "description": "local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Sistema",
+      "description": "Estado de la API y reinicio de datos"
+    },
+    {
+      "name": "Productos",
+      "description": "Catálogo y búsqueda"
+    },
+    {
+      "name": "Carritos",
+      "description": "Carrito de compras"
+    },
+    {
+      "name": "Pedidos",
+      "description": "Confirmación y consulta de pedidos"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Estado de la API",
+        "operationId": "health",
+        "responses": {
+          "200": {
+            "description": "La API está en marcha.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                },
+                "example": {
+                  "estado": "ok",
+                  "modo": "con-defectos",
+                  "version": "1.0.0"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reset": {
+      "post": {
+        "tags": [
+          "Sistema"
+        ],
+        "summary": "Vuelve los datos al estado inicial",
+        "operationId": "reset",
+        "responses": {
+          "204": {
+            "description": "Datos reiniciados. Sin cuerpo."
+          }
+        }
+      }
+    },
+    "/productos": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Lista productos con filtros y paginado",
+        "operationId": "listarProductos",
+        "parameters": [
+          {
+            "name": "edad",
+            "in": "query",
+            "description": "Comienzo de la categoría de edad, por ejemplo `Bebé` o `Niño`.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "color",
+            "in": "query",
+            "description": "Color exacto, sin distinguir mayúsculas.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "max",
+            "in": "query",
+            "description": "Precio máximo, inclusive: devuelve los productos con precio menor o igual a `max`.",
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Número de página, desde 1.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "description": "Cantidad de elementos por página.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de productos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaProductos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Algún parámetro no es válido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/productos/buscar": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Busca productos por texto",
+        "operationId": "buscarProductos",
+        "description": "Busca en nombre, categoría y color. Objetivo de tiempo de respuesta acordado con el equipo: p95 menor a 300 ms con la carga esperada (20 usuarios a la vez).",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": true,
+            "description": "Texto a buscar, al menos 2 caracteres.",
+            "schema": {
+              "type": "string",
+              "minLength": 2
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Resultado de la búsqueda.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultadoBusqueda"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Falta q o tiene menos de 2 caracteres.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/productos/{id}": {
+      "get": {
+        "tags": [
+          "Productos"
+        ],
+        "summary": "Obtiene un producto",
+        "operationId": "obtenerProducto",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "El producto existe.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "producto"
+                  ],
+                  "properties": {
+                    "producto": {
+                      "$ref": "#/components/schemas/Producto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "El id no es un entero positivo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe un producto con ese id.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carritos": {
+      "post": {
+        "tags": [
+          "Carritos"
+        ],
+        "summary": "Crea un carrito vacío",
+        "operationId": "crearCarrito",
+        "responses": {
+          "201": {
+            "description": "Carrito creado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Carrito"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carritos/{carritoId}": {
+      "get": {
+        "tags": [
+          "Carritos"
+        ],
+        "summary": "Obtiene un carrito",
+        "operationId": "obtenerCarrito",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/carritoId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "El carrito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Carrito"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe el carrito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carritos/{carritoId}/items": {
+      "post": {
+        "tags": [
+          "Carritos"
+        ],
+        "summary": "Agrega un producto al carrito",
+        "operationId": "agregarItem",
+        "description": "Si el producto ya está en el carrito, suma la cantidad.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/carritoId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoItem"
+              },
+              "example": {
+                "productoId": 4,
+                "cantidad": 2
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Item agregado. Devuelve el carrito completo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Carrito"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cuerpo inválido: productoId o cantidad fuera de regla.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe el carrito o el producto.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "El carrito está cerrado o no hay stock suficiente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/carritos/{carritoId}/items/{productoId}": {
+      "patch": {
+        "tags": [
+          "Carritos"
+        ],
+        "summary": "Cambia la cantidad de un item",
+        "operationId": "cambiarCantidad",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/carritoId"
+          },
+          {
+            "$ref": "#/components/parameters/productoId"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CambioCantidad"
+              },
+              "example": {
+                "cantidad": 3
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cantidad cambiada. Devuelve el carrito completo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Carrito"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Falta cantidad o no es un entero mayor o igual a 1.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe el carrito o el producto no está en el carrito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "El carrito está cerrado o no hay stock suficiente.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Carritos"
+        ],
+        "summary": "Quita un item del carrito",
+        "operationId": "quitarItem",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/carritoId"
+          },
+          {
+            "$ref": "#/components/parameters/productoId"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Item quitado. Sin cuerpo."
+          },
+          "404": {
+            "description": "No existe el carrito o el producto no está en el carrito. Repetir el DELETE de un item ya quitado devuelve 404 y el carrito no cambia.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "El carrito está cerrado.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedidos": {
+      "post": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Confirma un pedido a partir de un carrito",
+        "operationId": "crearPedido",
+        "description": "Cierra el carrito. Acepta el encabezado `Idempotency-Key`: si llega otra vez la misma clave con el mismo cuerpo, devuelve el mismo pedido con el encabezado `Idempotent-Replayed: true` y no crea otro. Si la clave llega con un cuerpo distinto, responde 422.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "description": "Clave única elegida por el cliente para poder reintentar sin duplicar el pedido.",
+            "schema": {
+              "type": "string",
+              "maxLength": 100
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NuevoPedido"
+              },
+              "example": {
+                "carritoId": "c-1",
+                "email": "ana@ejemplo.com",
+                "tarjeta": "4111111111111111",
+                "pais": "AR"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Pedido confirmado.",
+            "headers": {
+              "Idempotent-Replayed": {
+                "description": "Vale `true` cuando la respuesta es la repetición de un pedido ya creado con la misma clave.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pedido"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cuerpo inválido (email, tarjeta, país o carrito vacío).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Pago rechazado por la tarjeta de prueba.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe el carrito.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "El carrito ya se convirtió en pedido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "La Idempotency-Key ya se usó con otro cuerpo.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Lista pedidos con paginado",
+        "operationId": "listarPedidos",
+        "parameters": [
+          {
+            "name": "pagina",
+            "in": "query",
+            "description": "Número de página, desde 1.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limite",
+            "in": "query",
+            "description": "Cantidad de elementos por página.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Página de pedidos.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListaPedidos"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Algún parámetro no es válido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pedidos/{pedidoId}": {
+      "get": {
+        "tags": [
+          "Pedidos"
+        ],
+        "summary": "Obtiene un pedido",
+        "operationId": "obtenerPedido",
+        "parameters": [
+          {
+            "name": "pedidoId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "p-1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "El pedido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Pedido"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No existe el pedido.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "carritoId": {
+        "name": "carritoId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "example": "c-1"
+      },
+      "productoId": {
+        "name": "productoId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "example": 4
+      }
+    },
+    "schemas": {
+      "Health": {
+        "type": "object",
+        "required": [
+          "estado",
+          "modo",
+          "version"
+        ],
+        "properties": {
+          "estado": {
+            "type": "string",
+            "example": "ok"
+          },
+          "modo": {
+            "type": "string",
+            "enum": [
+              "con-defectos",
+              "estable"
+            ]
+          },
+          "version": {
+            "type": "string"
+          }
+        }
+      },
+      "Producto": {
+        "type": "object",
+        "required": [
+          "id",
+          "nombre",
+          "categoria",
+          "color",
+          "precio",
+          "talla",
+          "stock"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "example": 4
+          },
+          "nombre": {
+            "type": "string",
+            "example": "Remera Dino Aventurero"
+          },
+          "categoria": {
+            "type": "string",
+            "example": "Niño (3-8)"
+          },
+          "color": {
+            "type": "string",
+            "example": "Verde"
+          },
+          "precio": {
+            "type": "number",
+            "minimum": 0
+          },
+          "talla": {
+            "type": "string",
+            "example": "6"
+          },
+          "stock": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "ListaProductos": {
+        "type": "object",
+        "required": [
+          "pagina",
+          "limite",
+          "total",
+          "productos"
+        ],
+        "properties": {
+          "pagina": {
+            "type": "integer"
+          },
+          "limite": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "productos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Producto"
+            }
+          }
+        }
+      },
+      "ResultadoBusqueda": {
+        "type": "object",
+        "required": [
+          "q",
+          "total",
+          "productos"
+        ],
+        "properties": {
+          "q": {
+            "type": "string"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "productos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Producto"
+            }
+          }
+        }
+      },
+      "ItemCarrito": {
+        "type": "object",
+        "required": [
+          "productoId",
+          "nombre",
+          "precioUnitario",
+          "cantidad",
+          "subtotal"
+        ],
+        "properties": {
+          "productoId": {
+            "type": "integer"
+          },
+          "nombre": {
+            "type": "string"
+          },
+          "precioUnitario": {
+            "type": "number",
+            "description": "Precio de una unidad, como número."
+          },
+          "cantidad": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "subtotal": {
+            "type": "number"
+          }
+        }
+      },
+      "Carrito": {
+        "type": "object",
+        "required": [
+          "id",
+          "estado",
+          "items",
+          "subtotal"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "c-1"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "abierto",
+              "cerrado"
+            ]
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemCarrito"
+            }
+          },
+          "subtotal": {
+            "type": "number"
+          }
+        }
+      },
+      "NuevoItem": {
+        "type": "object",
+        "required": [
+          "productoId",
+          "cantidad"
+        ],
+        "properties": {
+          "productoId": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "cantidad": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Entero mayor o igual a 1."
+          }
+        }
+      },
+      "CambioCantidad": {
+        "type": "object",
+        "required": [
+          "cantidad"
+        ],
+        "properties": {
+          "cantidad": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      },
+      "NuevoPedido": {
+        "type": "object",
+        "required": [
+          "carritoId",
+          "email",
+          "tarjeta"
+        ],
+        "properties": {
+          "carritoId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "tarjeta": {
+            "type": "string",
+            "description": "16 dígitos, de prueba.",
+            "pattern": "^[0-9]{16}$"
+          },
+          "pais": {
+            "type": "string",
+            "enum": [
+              "AR",
+              "UY",
+              "CL",
+              "MX"
+            ],
+            "default": "AR"
+          }
+        }
+      },
+      "Pedido": {
+        "type": "object",
+        "required": [
+          "id",
+          "carritoId",
+          "email",
+          "pais",
+          "subtotal",
+          "envio",
+          "total",
+          "estado",
+          "creado"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "p-1"
+          },
+          "carritoId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "pais": {
+            "type": "string"
+          },
+          "subtotal": {
+            "type": "number"
+          },
+          "envio": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "estado": {
+            "type": "string",
+            "enum": [
+              "confirmado"
+            ]
+          },
+          "creado": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ListaPedidos": {
+        "type": "object",
+        "required": [
+          "pagina",
+          "limite",
+          "total",
+          "pedidos"
+        ],
+        "properties": {
+          "pagina": {
+            "type": "integer"
+          },
+          "limite": {
+            "type": "integer"
+          },
+          "total": {
+            "type": "integer"
+          },
+          "pedidos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Pedido"
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "codigo",
+          "mensaje",
+          "detalles"
+        ],
+        "properties": {
+          "codigo": {
+            "type": "string",
+            "example": "VALIDACION"
+          },
+          "mensaje": {
+            "type": "string"
+          },
+          "detalles": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Campos con problemas, si los hay."
+          }
+        }
+      }
+    }
+  }
+}

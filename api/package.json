@@ -1,0 +1,8 @@
+{
+  "name": "minimoda-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API de práctica de MiniModa (TestingAI, AcademiaQA)",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=20" }
+}
