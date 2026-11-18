@@ -167,7 +167,7 @@ CAPTURA REAL PENDIENTE (issue y PR de ejemplo).
 **Prompt 1 · Resultados de axe → hallazgos agrupados**
 
 ```text
-Sos QA de accesibilidad. Te paso el JSON de axe-core de una ficha de producto de una tienda online, analizada con WCAG 2.2 AA. Agrupá las violaciones por criterio de conformidad. Para cada grupo indicá: regla de axe, criterio WCAG con número y nivel, elementos afectados (selector), impacto en las personas usuarias y cómo verificarlo a mano. Separá los ítems "incompletos" en otra lista. Si algo depende del contexto y no se puede afirmar desde el JSON, marcalo como A CONFIRMAR.
+Sos QA de accesibilidad. Te paso el JSON de axe-core de una ficha de producto de una tienda online, analizada con WCAG 2.2 AA. Agrupá las violaciones por criterio de conformidad. Para cada grupo, indicá: regla de axe, criterio WCAG con número y nivel, elementos afectados (selector), impacto en las personas usuarias y cómo verificarlo a mano. Separá los ítems "incompletos" en otra lista. Si algo depende del contexto y no se puede afirmar desde el JSON, marcalo como A CONFIRMAR.
 ```
 
 **Prompt 2 · Test de axe con Playwright**
@@ -185,7 +185,7 @@ Escribí clase-07/tests/visual.spec.ts: para los anchos 375, 768 y 1280 px, abr�
 **Prompt 4 · Capturas → diferencias**
 
 ```text
-Te paso dos capturas de la misma página en 375 px: la de referencia y la nueva, más las notas de la versión nueva. Listá cada diferencia visible con su ubicación. Para cada una indicá si está en las notas (cambio esperado) o no (posible defecto) y si puede afectar la accesibilidad: contraste, tamaño del objetivo, foco o reflow. Marcá como A CONFIRMAR lo que no se distinga con claridad en la imagen.
+Te paso dos capturas de la misma página en 375 px: la de referencia y la nueva, más las notas de la versión nueva. Listá cada diferencia visible con su ubicación. Para cada una, indicá si está en las notas (cambio esperado) o no (posible defecto) y si puede afectar la accesibilidad: contraste, tamaño del objetivo, foco o reflow. Marcá como A CONFIRMAR lo que no se distinga con claridad en la imagen.
 ```
 
 **Prompt 5 · Hallazgo → issue**
