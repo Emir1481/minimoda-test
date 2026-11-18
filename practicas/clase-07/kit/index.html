@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campera polar infantil · MiniModa (página de práctica)</title>
+<link rel="stylesheet" href="estilos.css">
+
+</head>
+<body>
+<div class="promo">Hasta 3 cuotas sin interés en toda la colección de invierno · Cambios gratis durante 30 días · Envíos a todo el país</div>
+<header>
+  <a class="marca" href="#">MiniModa</a>
+  <nav><a href="#">Bebés</a><a href="#">Niñas</a><a href="#">Niños</a><a href="#">Ofertas</a></nav>
+  <button class="icono-carrito" type="button"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0B1F3A" stroke-width="2"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.5 12h12l2-8H6.2"/></svg></button>
+</header>
+<main>
+  <p class="migas">Inicio › Niños › Abrigos › Campera polar infantil</p>
+  <div class="ficha">
+    <div class="galeria">
+      <img src="img/campera-polar.png" width="800" height="600">
+      
+      <img class="miniatura" src="img/detalle-cierre.png" alt="IMG_2041.jpg" width="400" height="600">
+    </div>
+    <div class="info">
+      <h1>Campera polar infantil</h1>
+      <div class="precios"><span class="precio-antes">$ 42.000</span><span class="precio-oferta">$ 31.500</span></div>
+      <p class="stock" data-dinamico>Quedan 3 unidades · actualizado a las <span id="hora">--:--</span></p>
+      <p>Talle</p>
+      <div class="talles">
+        <button class="talle" type="button" aria-pressed="false">2</button><button class="talle" type="button" aria-pressed="false">4</button><button class="talle" type="button" aria-pressed="true">6</button><button class="talle" type="button" aria-pressed="false">8</button><button class="talle" type="button" aria-pressed="false">10</button><button class="talle" type="button" aria-pressed="false">12</button>
+      </div>
+      <button class="link-guia" type="button" id="abrir-guia">Guía de talles</button>
+      <div class="cantidad"><label for="cant">Cantidad</label><input id="cant" type="number" min="1" value="1"></div>
+      <div class="acciones">
+        <button class="btn btn-primario" type="button" aria-label="btn-primary" id="agregar">Agregar al carrito</button>
+        <div class="btn btn-secundario" onclick="location.hash='checkout'">Comprar ahora</div>
+      </div>
+      <div class="aviso" id="aviso">Producto agregado al carrito</div>
+    </div>
+  </div>
+  <h2>Descripción</h2>
+  <p>Campera de polar suave, con cierre y bolsillos. Ideal para días fríos y para usar debajo de una campera de lluvia.</p>
+  <h2>Tabla de talles</h2>
+  <table class="tabla-talles">
+    <tr><th>Talle</th><th>Edad</th><th>Altura (cm)</th><th>Pecho (cm)</th><th>Largo de manga (cm)</th></tr>
+    <tr><td>2</td><td>2 años</td><td>86–92</td><td>54</td><td>30</td></tr>
+    <tr><td>4</td><td>4 años</td><td>98–104</td><td>58</td><td>34</td></tr>
+    <tr><td>6</td><td>6 años</td><td>110–116</td><td>62</td><td>38</td></tr>
+    <tr><td>8</td><td>8 años</td><td>122–128</td><td>66</td><td>42</td></tr>
+  </table>
+</main>
+<section class="newsletter">
+  <h2>Recibí ofertas</h2>
+  <form id="form-news" novalidate>
+    <input id="email" type="email" placeholder="Tu email">
+    <button class="btn btn-primario" type="submit">Suscribirme</button>
+  </form>
+</section>
+<div class="cookies" id="cookies"><span>Usamos cookies para mejorar tu experiencia.</span><button type="button" id="aceptar-cookies">Aceptar</button></div>
+<div class="modal-fondo" id="guia">
+  <div class="modal">
+    <button class="cerrar" type="button" aria-label="Cerrar" id="cerrar-guia">×</button>
+    <h2>Guía de talles</h2>
+    <p>Medí el pecho por la parte más ancha y elegí el talle más cercano de la tabla.</p>
+  </div>
+</div>
+<script>
+  var d=new Date(); document.getElementById('hora').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  document.querySelectorAll('.talle').forEach(function(b){b.addEventListener('click',function(){document.querySelectorAll('.talle').forEach(function(o){o.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true')})});
+  document.getElementById('agregar').addEventListener('click',function(){var a=document.getElementById('aviso');a.classList.add('visible');setTimeout(function(){a.classList.remove('visible')},4000)});
+  document.getElementById('abrir-guia').addEventListener('click',function(){document.getElementById('guia').classList.add('abierto')});
+  document.getElementById('cerrar-guia').addEventListener('click',function(){document.getElementById('guia').classList.remove('abierto')});
+  document.getElementById('aceptar-cookies').addEventListener('click',function(){document.getElementById('cookies').style.display='none'});
+  document.getElementById('form-news').addEventListener('submit',function(e){e.preventDefault();var i=document.getElementById('email');if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(i.value)){i.classList.add('invalido')}else{i.classList.remove('invalido')}});
+</script>
+</body>
+</html>
