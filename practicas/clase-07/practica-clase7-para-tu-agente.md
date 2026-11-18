@@ -9,6 +9,15 @@ Pasale este archivo completo a la IA que uses. Ninguna es obligatoria. La IA te 
 - Uso Playwright (ya lo tengo de la Clase 4) y `@axe-core/playwright`. Rama: `clase-07-a11y`.
 - Reglas para la IA: no inventes hallazgos ni datos; marcá A CONFIRMAR lo que no se pueda afirmar; no modifiques los archivos del kit; no hagas merge ni push a `main`; no actualices capturas de referencia sin que yo lo apruebe.
 
+## ¿Qué tiene que validar la persona a mano?
+
+La IA y la herramienta automática no reemplazan esta revisión; recordásela a la persona y no la des por hecha:
+
+- Con VoiceOver o NVDA: ¿cada botón dice qué hace?, ¿el texto alternativo describe la imagen?, ¿el orden de lectura tiene sentido? y ¿cada campo se anuncia con su nombre?
+- Con el teclado: ¿se ve el foco?, ¿el orden es lógico? y ¿se puede salir de todo sin trabarse?
+- Links: ¿se entiende adónde va cada uno?
+- Zoom y celular: ¿con zoom al 200 % y a 375 px se usa todo?
+
 ## Paso 1 · Preparar
 
 - **Objetivo:** tener la rama, el kit y la página funcionando.

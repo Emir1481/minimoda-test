@@ -7,7 +7,7 @@
   size:A4;
   margin:16mm 16mm 16mm 16mm;
   @bottom-center{
-    content:"TestingAI · Clase 7 · Práctica · " counter(page) "/" counter(pages);
+    content:"TestingAI · Clase 7 · Práctica ·  · " counter(page) "/" counter(pages);
     font-family:Inter,"Noto Sans",sans-serif;
     font-size:8px;
     color:#61656C;
@@ -177,17 +177,6 @@ img.shot-term{
 /* keep "Listo si" with the step above when possible */
 p:has(> strong:first-child){page-break-before:avoid}
 
-body{font-size:9.5pt;line-height:1.4}
-h1{font-size:22pt;margin:0 0 .28em;padding:0 0 .26em}
-h2{font-size:12.5pt;margin:.75em 0 .28em}
-h3{font-size:10.5pt;margin:.6em 0 .22em}
-p{margin:.22em 0}
-pre,code.block{padding:8px 12px;margin:.25em 0 .4em}
-ul,ol{margin:.18em 0 .32em}
-li{margin:.12em 0}
-table{margin:.3em 0 .4em;font-size:8.5pt}
-th,td{padding:4px 6px}
-
 </style></head><body><h1>Práctica · Clase 7 · Auditá y automatizá una ficha de producto</h1>
 <p><strong>TestingAI · AcademiaQA</strong> · Testing de accesibilidad y testing visual y responsive con IA</p>
 <p>Vas a trabajar sobre una ficha de producto de MiniModa que tiene errores de accesibilidad y visuales <strong>puestos a propósito</strong>. Primero la escaneás con una herramienta, después revisás a mano lo que la herramienta no ve, la probás en varios tamaños y con regresión visual, y terminás con issues y un PR.</p>
@@ -229,6 +218,29 @@ th,td{padding:4px 6px}
 </table>
 <p>No hace falta crear ninguna cuenta nueva. Si no tenés Node, seguí el <strong>camino corto</strong> del final.</p>
 <p><strong>Material:</strong> el kit está en <code>practicas/clase-07/kit/</code> de este repo. LINK_PRACTICA</p>
+<h2>¿Qué tenés que validar a mano?</h2>
+<p><strong>La herramienta automática no ve esto.</strong> Es la columna «Necesita una persona» de la clase (slide 10, «¿Qué prueba la IA y qué no?»). Revisalo sí o sí, aunque el escaneo dé 0 errores. Empezá por el lector de pantalla.</p>
+<p><strong>1. Con VoiceOver o NVDA</strong></p>
+<ul>
+<li>¿Cada botón dice qué hace? (por ejemplo, «Agregar al carrito», no solo «botón»).</li>
+<li>¿El texto alternativo de cada imagen describe lo que muestra? (no el nombre del archivo).</li>
+<li>¿El orden de lectura tiene sentido?</li>
+<li>¿Cada campo se anuncia con su nombre y, si hay un error, con el mensaje?</li>
+</ul>
+<p><strong>2. Con el teclado</strong></p>
+<ul>
+<li>¿Ves siempre dónde está el foco?</li>
+<li>¿El orden del foco sigue el orden de la página?</li>
+<li>¿Podés salir de todo (ventanas, banners y menús) sin trabarte?</li>
+</ul>
+<p><strong>3. Links</strong></p>
+<ul>
+<li>¿Se entiende adónde va cada link, leído solo? (nada de «clic acá»).</li>
+</ul>
+<p><strong>4. Zoom y celular</strong></p>
+<ul>
+<li>¿Con zoom al 200 % y en un celular (375 px) se puede usar todo, sin desplazarse de costado?</li>
+</ul>
 <h2>Paso 1 · Preparar (2 min)</h2>
 <p><strong>¿Qué hacés?</strong> En tu repo de clases anteriores creás una rama nueva, copiás el kit y levantás la página.</p>
 <pre class="block short"><code>git checkout -b clase-07-a11y
@@ -270,7 +282,7 @@ color-contrast (serious) · 1 elemento(s) · wcag2aa, wcag143
 <h2>Paso 5 · Lector de pantalla (4 min)</h2>
 <p><strong>¿Qué hacés?</strong> Activás tu lector de pantalla y escuchás tres cosas: el botón del carrito, la imagen principal y el mensaje que aparece al agregar al carrito (y el error del formulario de newsletter). Si no podés activar el lector, usá el árbol de accesibilidad de las DevTools (Elements → Accessibility) y anotalo.</p>
 <p><strong>¿Por qué?</strong> El lector dice lo que el código declara, no lo que se ve. Así aparecen nombres vacíos, textos alternativos inútiles y avisos que nadie escucha.</p>
-<p><strong>Listo si</strong> anotaste qué dijo el lector en cada caso y qué debería haber dicho.</p>
+<p><strong>Listo si</strong> anotaste qué dijo el lector en cada caso y qué debería haber dicho, y repasaste la lista «¿Qué tenés que validar a mano?».</p>
 <p>CAPTURA REAL PENDIENTE (lector de pantalla sobre la página de práctica).</p>
 <p><strong>Términos:</strong> lector de pantalla, nombre accesible, árbol de accesibilidad.</p>
 <h2>Paso 6 · Tamaños y zoom (4 min)</h2>

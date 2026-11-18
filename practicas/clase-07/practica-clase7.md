@@ -21,6 +21,31 @@ No hace falta crear ninguna cuenta nueva. Si no tenés Node, seguí el **camino 
 
 **Material:** el kit está en `practicas/clase-07/kit/` de este repo. LINK_PRACTICA
 
+## ¿Qué tenés que validar a mano?
+
+**La herramienta automática no ve esto.** Es la columna «Necesita una persona» de la clase (slide 10, «¿Qué prueba la IA y qué no?»). Revisalo sí o sí, aunque el escaneo dé 0 errores. Empezá por el lector de pantalla.
+
+**1. Con VoiceOver o NVDA**
+
+- ¿Cada botón dice qué hace? (por ejemplo, «Agregar al carrito», no solo «botón»).
+- ¿El texto alternativo de cada imagen describe lo que muestra? (no el nombre del archivo).
+- ¿El orden de lectura tiene sentido?
+- ¿Cada campo se anuncia con su nombre y, si hay un error, con el mensaje?
+
+**2. Con el teclado**
+
+- ¿Ves siempre dónde está el foco?
+- ¿El orden del foco sigue el orden de la página?
+- ¿Podés salir de todo (ventanas, banners y menús) sin trabarte?
+
+**3. Links**
+
+- ¿Se entiende adónde va cada link, leído solo? (nada de «clic acá»).
+
+**4. Zoom y celular**
+
+- ¿Con zoom al 200 % y en un celular (375 px) se puede usar todo, sin desplazarse de costado?
+
 ## Paso 1 · Preparar (2 min)
 
 **¿Qué hacés?** En tu repo de clases anteriores creás una rama nueva, copiás el kit y levantás la página.
@@ -97,7 +122,7 @@ color-contrast (serious) · 1 elemento(s) · wcag2aa, wcag143
 
 **¿Por qué?** El lector dice lo que el código declara, no lo que se ve. Así aparecen nombres vacíos, textos alternativos inútiles y avisos que nadie escucha.
 
-**Listo si** anotaste qué dijo el lector en cada caso y qué debería haber dicho.
+**Listo si** anotaste qué dijo el lector en cada caso y qué debería haber dicho, y repasaste la lista «¿Qué tenés que validar a mano?».
 
 CAPTURA REAL PENDIENTE (lector de pantalla sobre la página de práctica).
 
