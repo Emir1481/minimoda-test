@@ -23,7 +23,7 @@ No hace falta crear ninguna cuenta nueva. Si no tenés Node, seguí el **camino 
 
 ## Paso 1 · Preparar (2 min)
 
-**¿Qué hacés?** en tu repo de clases anteriores creás una rama nueva, copiás el kit y levantás la página.
+**¿Qué hacés?** En tu repo de clases anteriores creás una rama nueva, copiás el kit y levantás la página.
 
 ```bash
 git checkout -b clase-07-a11y
@@ -34,7 +34,7 @@ python3 -m http.server 5507
 
 En otra terminal, en la raíz del repo: `npm i -D @axe-core/playwright`. En Windows, si `python3` no existe, probá `python` o `npx http-server -p 5507`.
 
-**¿Por qué?** una rama nueva suma esta capa sin tocar lo que ya hiciste, y deja todo listo para un PR. Los defectos son los mismos para todos: por eso cada uno trabaja en su repo y no en uno común.
+**¿Por qué?** Una rama nueva suma esta capa sin tocar lo que ya hiciste, y deja todo listo para un PR. Los defectos son los mismos para todos: por eso cada uno trabaja en su repo y no en uno común.
 
 **Listo si** `http://localhost:5507/` muestra la ficha «Campera polar infantil» y `http://localhost:5507/index-v2.html` muestra la versión 2.
 
@@ -44,7 +44,7 @@ En otra terminal, en la raíz del repo: `npm i -D @axe-core/playwright`. En Wind
 
 ## Paso 2 · Escaneo automático (4 min)
 
-**¿Qué hacés?** le pedís a tu IA el test `clase-07/tests/a11y.spec.ts` con el **prompt 2**. Lo revisás antes de correrlo: la URL es la local, están las cinco etiquetas WCAG y el test falla si hay violaciones. Después lo corrés:
+**¿Qué hacés?** Le pedís a tu IA el test `clase-07/tests/a11y.spec.ts` con el **prompt 2**. Lo revisás antes de correrlo: la URL es la local, están las cinco etiquetas WCAG y el test falla si hay violaciones. Después lo corrés:
 
 ```bash
 npx playwright test clase-07/tests/a11y.spec.ts
@@ -54,7 +54,7 @@ Si Playwright responde «No tests found», tu configuración busca en otra carpe
 
 Sumá una segunda opinión: Lighthouse en DevTools (pestaña Lighthouse → Accesibilidad) o `npx pa11y --runner axe --runner htmlcs http://localhost:5507/` (pa11y pide Node 22.13 o más; es opcional). Guardá las salidas en `clase-07/resultados/`.
 
-**¿Por qué?** el escaneo encuentra rápido lo que se puede comprobar con código. Es evidencia, no prueba de que la página sea accesible.
+**¿Por qué?** El escaneo encuentra rápido lo que se puede comprobar con código. Es evidencia, no prueba de que la página sea accesible.
 
 **Listo si** el test falla y en `clase-07/resultados/axe.json` hay violaciones con su regla y sus etiquetas. Así se ve la salida (real, del ensayo con axe-core 4.14.1):
 
@@ -69,9 +69,9 @@ color-contrast (serious) · 1 elemento(s) · wcag2aa, wcag143
 
 ## Paso 3 · Ordenar con IA (3 min)
 
-**¿Qué hacés?** pegás el JSON en tu chat con el **prompt 1**. La IA agrupa por criterio y marca A CONFIRMAR lo que depende del contexto. Después abrís la página y confirmás **dos** hallazgos; uno, de contraste, medido con el selector de color de las DevTools (o con el verificador de WebAIM).
+**¿Qué hacés?** Pegás el JSON en tu chat con el **prompt 1**. La IA agrupa por criterio y marca A CONFIRMAR lo que depende del contexto. Después abrís la página y confirmás **dos** hallazgos; uno, de contraste, medido con el selector de color de las DevTools (o con el verificador de WebAIM).
 
-**¿Por qué?** la IA ordena y explica, pero puede equivocarse (CT-DAT §6.1.2). Lo que no confirmás en la página no va al informe.
+**¿Por qué?** La IA ordena y explica, pero puede equivocarse (CT-DAT §6.1.2). Lo que no confirmás en la página no va al informe.
 
 **Listo si** tenés dos hallazgos confirmados, con el valor de contraste medido.
 
@@ -81,9 +81,9 @@ color-contrast (serious) · 1 elemento(s) · wcag2aa, wcag143
 
 ## Paso 4 · Teclado (5 min)
 
-**¿Qué hacés?** recorrés la página solo con el teclado (Tab, Shift+Tab, Enter, Espacio, flechas y Esc) y respondés las cinco preguntas: ¿llego a todo? (2.1.1) ¿veo dónde estoy? (2.4.7) ¿el orden tiene sentido? (2.4.3) ¿puedo salir de cada ventana? (2.1.2) ¿el foco queda a la vista? (2.4.11). No aceptes el banner de cookies hasta terminar este paso.
+**¿Qué hacés?** Recorrés la página solo con el teclado (Tab, Shift+Tab, Enter, Espacio, flechas y Esc) y respondés las cinco preguntas: ¿llego a todo? (2.1.1), ¿veo dónde estoy? (2.4.7), ¿el orden tiene sentido? (2.4.3), ¿puedo salir de cada ventana? (2.1.2) y ¿el foco queda a la vista? (2.4.11). No aceptes el banner de cookies hasta terminar este paso.
 
-**¿Por qué?** casi nada de esto lo marca una herramienta automática. Es lo que más se escapa.
+**¿Por qué?** Casi nada de esto lo marca una herramienta automática. Es lo que más se escapa.
 
 **Listo si** en la tabla del informe anotaste cada barrera con su criterio y cómo la encontraste.
 
@@ -93,9 +93,9 @@ color-contrast (serious) · 1 elemento(s) · wcag2aa, wcag143
 
 ## Paso 5 · Lector de pantalla (4 min)
 
-**¿Qué hacés?** activás tu lector de pantalla y escuchás tres cosas: el botón del carrito, la imagen principal y el mensaje que aparece al agregar al carrito (y el error del formulario de newsletter). Si no podés activar el lector, usá el árbol de accesibilidad de las DevTools (Elements → Accessibility) y anotalo.
+**¿Qué hacés?** Activás tu lector de pantalla y escuchás tres cosas: el botón del carrito, la imagen principal y el mensaje que aparece al agregar al carrito (y el error del formulario de newsletter). Si no podés activar el lector, usá el árbol de accesibilidad de las DevTools (Elements → Accessibility) y anotalo.
 
-**¿Por qué?** el lector dice lo que el código declara, no lo que se ve. Así aparecen nombres vacíos, textos alternativos inútiles y avisos que nadie escucha.
+**¿Por qué?** El lector dice lo que el código declara, no lo que se ve. Así aparecen nombres vacíos, textos alternativos inútiles y avisos que nadie escucha.
 
 **Listo si** anotaste qué dijo el lector en cada caso y qué debería haber dicho.
 
@@ -105,9 +105,9 @@ CAPTURA REAL PENDIENTE (lector de pantalla sobre la página de práctica).
 
 ## Paso 6 · Tamaños y zoom (4 min)
 
-**¿Qué hacés?** le pedís a tu IA `clase-07/tests/visual.spec.ts` con el **prompt 3**: capturas de página completa en 375, 768 y 1280 px. Revisás las capturas. Después, en el navegador, probás el zoom al 200 % y un ancho de 320 px (modo dispositivo de las DevTools). Anotás lo que se rompe con su criterio (1.4.4 y 1.4.10). Si querés, pasale las capturas al chat con el **prompt 4** y confirmá cada diferencia.
+**¿Qué hacés?** Le pedís a tu IA `clase-07/tests/visual.spec.ts` con el **prompt 3**: capturas de página completa en 375, 768 y 1280 px. Revisás las capturas. Después, en el navegador, probás el zoom al 200 % y un ancho de 320 px (modo dispositivo de las DevTools). Anotás lo que se rompe con su criterio (1.4.4 y 1.4.10). Si querés, pasale las capturas al chat con el **prompt 4** y confirmá cada diferencia.
 
-**¿Por qué?** una página puede funcionar en escritorio y romperse en el celular. El zoom y el reflow son también criterios de accesibilidad.
+**¿Por qué?** Una página puede funcionar en escritorio y romperse en el celular. El zoom y el reflow son también criterios de accesibilidad.
 
 **Listo si** tenés la tabla de tamaños completa en el informe.
 
@@ -117,7 +117,7 @@ CAPTURA REAL PENDIENTE (lector de pantalla sobre la página de práctica).
 
 ## Paso 7 · Regresión visual (4 min)
 
-**¿Qué hacés?** generás las capturas de referencia con la versión 1 y comparás contra la versión 2:
+**¿Qué hacés?** Generás las capturas de referencia con la versión 1 y comparás contra la versión 2:
 
 ```bash
 npx playwright test clase-07/tests/visual.spec.ts --update-snapshots
@@ -127,7 +127,7 @@ npx playwright show-report
 
 En Windows PowerShell: `$env:PAGINA="http://localhost:5507/index-v2.html"; npx playwright test clase-07/tests/visual.spec.ts`. En el reporte abrís cada diff y clasificás cada diferencia: **cambio esperado** (está en `notas-v2.md`) o **defecto**. No actualices la referencia con un defecto.
 
-**¿Por qué?** la herramienta solo sabe que algo cambió. Vos decidís si estaba pedido.
+**¿Por qué?** La herramienta solo sabe que algo cambió. Vos decidís si estaba pedido.
 
 **Listo si** cada diferencia tiene su clasificación en el informe. Así se ve el reporte (real, del ensayo):
 
@@ -137,9 +137,9 @@ En Windows PowerShell: `$env:PAGINA="http://localhost:5507/index-v2.html"; npx p
 
 ## Paso 8 · Issues y PR (4 min)
 
-**¿Qué hacés?** abrís **3 issues en tu repo**: 2 con la etiqueta `accesibilidad` y 1 con `visual`, con el **prompt 5** (formato de CT-DAT §4.3.2). Completás en el informe la columna «¿Lo detectó la herramienta?». Abrís el PR de `clase-07-a11y` a `main`, **sin mergear**, con los issues enlazados.
+**¿Qué hacés?** Abrís **3 issues en tu repo**: 2 con la etiqueta `accesibilidad` y 1 con `visual`, con el **prompt 5** (formato de CT-DAT §4.3.2). Completás en el informe la columna «¿Lo detectó la herramienta?». Abrís el PR de `clase-07-a11y` a `main`, **sin mergear**, con los issues enlazados.
 
-**¿Por qué?** un hallazgo sin criterio, pasos y evidencia no se puede arreglar ni verificar. El PR abierto es tu pieza de portafolio: muestra criterio, no solo herramientas.
+**¿Por qué?** Un hallazgo sin criterio, pasos y evidencia no se puede arreglar ni verificar. El PR abierto es tu pieza de portafolio: muestra criterio, no solo herramientas.
 
 **Listo si** el PR tiene `informe-accesibilidad-visual.md`, los dos tests, las capturas, `resultados/` y los 3 issues enlazados.
 
