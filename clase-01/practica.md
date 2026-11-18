@@ -78,4 +78,4 @@ Captura de la suite en Qase con tus casos: `evidencias/qase-suite-casos.png`
 | Skill | No use |
 
 ## 8. Entrega
-- Link de tu repo (pegalo también en el Telegram): ___tu respuesta aquí___
+- Link de tu repo (pegalo también en el Telegram): https://github.com/Emir1481/minimoda-test.git
