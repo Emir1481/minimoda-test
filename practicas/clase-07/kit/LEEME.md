@@ -9,18 +9,9 @@ Página estática de práctica de MiniModa: una ficha de producto con errores de
 | `notas-v2.md` | Qué cambio se pidió en la versión 2 |
 | `estilos.css`, `img/`, `fonts/` | Estilos, imágenes y fuentes locales (Kanit, licencia OFL) |
 
-## Cómo levantar la página
+## Cómo abrir la página
 
-Desde la carpeta donde está este archivo, con cualquiera de estas dos opciones:
+- **En línea:** [versión 1](https://simonethg.github.io/minimoda-test/practicas/clase-07/kit/) y [versión 2](https://simonethg.github.io/minimoda-test/practicas/clase-07/kit/index-v2.html). Usá esta para Lighthouse.
+- **Sin internet:** abrí `index.html` o `index-v2.html` con doble clic.
 
-```bash
-python3 -m http.server 5507
-```
-
-```bash
-npx http-server -p 5507
-```
-
-Abrí `http://localhost:5507/` (versión 1) y `http://localhost:5507/index-v2.html` (versión 2).
-
-No necesita backend, cuentas ni conexión a internet.
+No necesita backend, cuentas ni claves.

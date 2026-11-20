@@ -2,33 +2,25 @@
 
 **TestingAI · AcademiaQA** · miércoles 18/11/2026
 
-Auditás y automatizás una ficha de producto de MiniModa que tiene errores de accesibilidad y visuales **puestos a propósito**: escaneo con axe-core, revisión con teclado y lector de pantalla, capturas en tres tamaños, regresión visual contra una versión 2, issues y un PR en tu repo.
+Probás una ficha de producto de MiniModa con errores de accesibilidad y visuales **puestos a propósito**. Son 5 retos cortos, sin código y gratis: Lighthouse, teclado, lector de pantalla, celular y zoom, y 3 issues en tu repo.
+
+## Página de práctica
+
+- [Versión 1](https://simonethg.github.io/minimoda-test/practicas/clase-07/kit/)
+- [Versión 2](https://simonethg.github.io/minimoda-test/practicas/clase-07/kit/index-v2.html)
+- [Qué se pidió en la versión 2](kit/notas-v2.md)
 
 ## Materiales
 
-- [PDF de la práctica](practica-clase7.pdf)
-- [Guía en Markdown](practica-clase7.md)
-- [Archivo para tu IA](practica-clase7-para-tu-agente.md) (pasáselo completo al chat o agente que uses; ninguno es obligatorio)
-- [Kit: la página de práctica](kit/) (versión 1, versión 2 y notas de la versión 2)
+- [Guía práctica (PDF)](practica-clase7.pdf)
+- [Guía práctica (.md)](practica-clase7.md)
+- [Guía para tu IA (.md)](practica-clase7-para-tu-agente.md): pasásela completa a tu chat. Ninguno es obligatorio.
+- [Kit en zip](https://github.com/Simonethg/minimoda-test/releases/download/kit-clase-7/kit-accesibilidad-minimoda.zip), para abrir la página sin internet.
 
-## Levantar la página
+## Los 5 retos
 
-```bash
-cd kit
-python3 -m http.server 5507
-```
-
-Versión 1: `http://localhost:5507/` · Versión 2: `http://localhost:5507/index-v2.html`. También sirve `npx http-server -p 5507`.
-
-## Los 8 pasos (resumen)
-
-1. Preparar: rama `clase-07-a11y`, kit en `clase-07/kit/`, página en `localhost:5507`.
-2. Escaneo automático con axe-core desde Playwright (y Lighthouse o pa11y como segunda opinión).
-3. Ordenar los resultados con tu IA y confirmar dos hallazgos en la página.
-4. Teclado: cinco preguntas, cada una con su criterio.
-5. Lector de pantalla: botones, imágenes y mensajes.
-6. Tamaños y zoom: 375, 768 y 1280 px, zoom al 200 % y 320 px.
-7. Regresión visual contra la versión 2.
-8. Tres issues en tu repo y un PR sin mergear.
-
-Sin Node: seguí el camino corto del PDF.
+1. Escaneá con Lighthouse.
+2. Recorré la página con el teclado.
+3. Escuchala con un lector de pantalla.
+4. Probala en 375 px, con zoom al 200 %, y comparala con la versión 2.
+5. Contá lo que encontraste: una tabla y 3 issues.
