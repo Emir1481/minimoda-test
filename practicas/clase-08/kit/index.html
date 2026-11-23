@@ -47,6 +47,11 @@ summary{cursor:pointer;font-weight:600}
 .cols li{list-style:none}
 .paso1{border:2px solid var(--teal2)}
 .ejemplo{border:2px dashed var(--teal2)}
+.nosql{border:2px solid #9A3412}
+#n-consulta{width:100%;box-sizing:border-box;min-height:90px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;border:1px solid var(--line);border-radius:8px;padding:8px}
+#n-prompt,.docs{white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;background:#F1F5F9;border:1px solid var(--line);border-radius:8px;padding:10px;max-height:320px;overflow:auto;margin:.5rem 0}
+.docs:empty{display:none}
+.err{display:none;background:var(--redbg);color:var(--red);border:1px solid #F5B5B5;border-radius:8px;padding:8px 12px;font-family:ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
 .campos dt{font-weight:700;color:var(--navy);margin-top:.6rem}
 .campos dd{margin:.2rem 0 0 0}
 .campos ul{padding-left:1.2rem;margin:.2rem 0}
@@ -140,6 +145,28 @@ WHERE email IS NULL OR email = '';</pre>
         </ul>
       </dd>
     </dl>
+  </section>
+  <section class="nosql" aria-labelledby="t-nosql">
+    <h2 id="t-nosql">Reto extra · NoSQL: los mismos pedidos como documentos</h2>
+    <p>Cada pedido de MiniModa, guardado como un documento JSON estilo MongoDB: el cliente y los items van adentro del pedido. Se consulta con <code>db.pedidos.find({ … })</code>.</p>
+    <ol class="pasos">
+      <li>Copiá el prompt, pegáselo a tu agente y cambiá la pregunta del final.</li>
+      <li>Pegá la consulta que te da y tocá «Ejecutar».</li>
+      <li>Revisá si los documentos responden la pregunta.</li>
+    </ol>
+    <pre id="n-prompt" tabindex="0" role="region" aria-label="Prompt NoSQL para el agente">Cargando los documentos…</pre>
+    <button class="main" id="n-copiar-prompt" type="button">Copiar prompt</button>
+    <ol class="preguntas">
+      <li><span>¿Qué pedidos de clientes de Montevideo están cancelados?</span> <button type="button" class="copiar-p" aria-label="Copiar la pregunta NoSQL 1">Copiar</button></li>
+      <li><span>¿Qué pedidos cancelados incluyen el producto «Jean Mom Celeste»?</span> <button type="button" class="copiar-p" aria-label="Copiar la pregunta NoSQL 2">Copiar</button></li>
+      <li><span>¿Qué pedidos pagados desde la app tienen un total mayor a $150.000?</span> <button type="button" class="copiar-p" aria-label="Copiar la pregunta NoSQL 3">Copiar</button></li>
+    </ol>
+    <label for="n-consulta">Consulta NoSQL (la del agente o la tuya)</label>
+    <textarea id="n-consulta" spellcheck="false" autocapitalize="off" autocomplete="off">db.pedidos.find({ "_id": 1117 })</textarea>
+    <div><button class="main" id="n-ejecutar" type="button">Ejecutar</button></div>
+    <p id="n-estado" role="status" aria-live="polite"></p>
+    <div id="n-error" class="err" role="alert"></div>
+    <pre id="n-resultado" class="docs" tabindex="0" role="region" aria-label="Documentos encontrados"></pre>
   </section>
 </div>
 <aside>
@@ -442,7 +469,104 @@ $('copiar-prompt').onclick = ()=> ESQ ? copiar(prompt(), 'Prompt copiado. Pegalo
 document.querySelectorAll('.copiar-p').forEach(bt=>{ bt.onclick=()=>copiar(bt.previousElementSibling.textContent, 'Pregunta copiada. Pegala en tu agente.'); });
 $('reiniciar').onclick = ()=>{ nuevaBase(); $('estado').textContent='Volviste a los datos originales. Tu lista de consultas sigue guardada.'; };
 
-initSqlJs().then(S=>{ SQL=S; nuevaBase(); ESQ = esquema(); $('prompt').textContent = prompt(); ejecutar(); historial.length=0; })
+/* ---- Reto NoSQL: documentos y motor de consultas propio (sin eval) ---- */
+let DOCS = [];
+function armarDocs(){
+  const q = (s)=>{ const r = db.exec(s)[0]; return r ? r.values.map(v=>Object.fromEntries(r.columns.map((c,i)=>[c,v[i]]))) : []; };
+  const cli = Object.fromEntries(q('SELECT id, nombre, email, ciudad FROM clientes').map(c=>[c.id,c]));
+  const its = {}; q('SELECT i.pedido_id, p.nombre AS producto, p.sku, p.categoria, i.cantidad, i.precio_unitario FROM items i JOIN productos p ON p.id = i.producto_id ORDER BY i.id').forEach(i=>{ const k=i.pedido_id; delete i.pedido_id; (its[k]=its[k]||[]).push(i); });
+  DOCS = q('SELECT * FROM pedidos ORDER BY id').map(p=>{ const c = cli[p.cliente_id]; const d = {_id:p.id, creado_en:p.creado_en, canal:p.canal, version:p.version, estado:p.estado, cupon:p.cupon, subtotal:p.subtotal, descuento:p.descuento, envio:p.envio, total:p.total, pago_ref:p.pago_ref, cliente:c?{id:c.id,nombre:c.nombre,email:c.email,ciudad:c.ciudad}:null, items:its[p.id]||[]}; return d; });
+}
+function parsear(src){ // JSON relajado: claves sin comillas, comillas simples. Nunca usa eval.
+  let i = 0; const err = m=>{ throw new Error(m + ' (posición ' + i + ')'); };
+  const ws = ()=>{ while(i<src.length && /\s/.test(src[i])) i++; };
+  function val(){ ws(); const c = src[i];
+    if(c==='{'){ i++; const o = {}; ws(); if(src[i]==='}'){ i++; return o; }
+      for(;;){ ws(); let k; if(src[i]==='"'||src[i]==="'") k = str(); else { const m = /^[A-Za-z_$][\w$.]*/.exec(src.slice(i)); if(!m) err('Falta el nombre de un campo'); k = m[0]; i += k.length; }
+        if(k==='__proto__'||k==='constructor'||k==='prototype') err('Campo no permitido');
+        ws(); if(src[i]!==':') err('Falta «:»'); i++; o[k] = val(); ws();
+        if(src[i]===','){ i++; ws(); if(src[i]==='}'){ i++; return o; } continue; } if(src[i]==='}'){ i++; return o; } err('Falta «,» o «}»'); } }
+    if(c==='['){ i++; const a = []; ws(); if(src[i]===']'){ i++; return a; }
+      for(;;){ a.push(val()); ws(); if(src[i]===','){ i++; continue; } if(src[i]===']'){ i++; return a; } err('Falta «,» o «]»'); } }
+    if(c==='"'||c==="'") return str();
+    const m = /^(-?\d+(\.\d+)?|true|false|null)/.exec(src.slice(i)); if(!m) err('Valor no válido');
+    i += m[0].length; return m[0]==='true'?true:m[0]==='false'?false:m[0]==='null'?null:Number(m[0]); }
+  function str(){ const qch = src[i++]; let s = ''; while(i<src.length && src[i]!==qch){ if(src[i]==='\\'){ i++; } s += src[i++]; } if(src[i]!==qch) err('Falta cerrar comillas'); i++; return s; }
+  const args = []; ws(); if(i<src.length){ args.push(val()); ws(); while(src[i]===','){ i++; args.push(val()); ws(); } } if(i<src.length) err('Sobra texto');
+  return args;
+}
+function valores(doc, path){
+  let cur = [doc];
+  for(const k of path.split('.')){ const nx = []; for(const v of cur){ const vs = Array.isArray(v) ? v : [v]; for(const x of vs){ if(x && typeof x==='object' && !Array.isArray(x) && Object.prototype.hasOwnProperty.call(x,k)) nx.push(x[k]); } } cur = nx; }
+  const out = []; for(const v of cur){ out.push(v); if(Array.isArray(v)) out.push(...v); } return out;
+}
+const igual = (a,b)=> JSON.stringify(a)===JSON.stringify(b);
+const esOp = o => o && typeof o==='object' && !Array.isArray(o) && Object.keys(o).length && Object.keys(o).every(k=>k[0]==='$');
+function cmp(vs, f){ return vs.some(v=> v!==null && typeof v!=='object' && f(v)); }
+function campo(vs, cond){
+  if(!esOp(cond)) return cond===null ? (vs.length===0 || vs.some(v=>v===null)) : vs.some(v=>igual(v,cond));
+  return Object.entries(cond).every(([op,a])=>{
+    switch(op){
+      case '$eq': return campo(vs, a);
+      case '$ne': return !campo(vs, a);
+      case '$gt': return cmp(vs, v=> typeof v===typeof a && v>a);
+      case '$gte': return cmp(vs, v=> typeof v===typeof a && v>=a);
+      case '$lt': return cmp(vs, v=> typeof v===typeof a && v<a);
+      case '$lte': return cmp(vs, v=> typeof v===typeof a && v<=a);
+      case '$in': if(!Array.isArray(a)) throw new Error('$in necesita una lista'); return a.some(x=>campo(vs, x));
+      case '$nin': if(!Array.isArray(a)) throw new Error('$nin necesita una lista'); return !a.some(x=>campo(vs, x));
+      case '$exists': return (vs.length>0) === !!a;
+      case '$size': return vs.some(v=>Array.isArray(v) && v.length===a);
+      case '$not': return !campo(vs, a);
+      case '$regex': { const re = new RegExp(String(a), cond.$options||''); return cmp(vs, v=> typeof v==='string' && re.test(v)); }
+      case '$options': return true;
+      case '$elemMatch': return vs.some(v=>Array.isArray(v) && v.some(e=> (e && typeof e==='object' && !esOp(a)) ? coincide(e, a) : campo([e], a)));
+      default: throw new Error('Operador no soportado: ' + op);
+    }});
+}
+function coincide(doc, f){
+  if(!f || typeof f!=='object' || Array.isArray(f)) throw new Error('El filtro tiene que ser un objeto { … }');
+  return Object.entries(f).every(([k,c])=>{
+    if(k==='$and') return c.every(x=>coincide(doc,x));
+    if(k==='$or') return c.some(x=>coincide(doc,x));
+    if(k==='$nor') return !c.some(x=>coincide(doc,x));
+    if(k[0]==='$') throw new Error('Operador no soportado: ' + k);
+    return campo(valores(doc,k), c);
+  });
+}
+function proyectar(d, p){
+  if(!p || !Object.keys(p).length) return d;
+  const incl = Object.entries(p).filter(([k,v])=>v && k!=='_id').map(([k])=>k);
+  if(!incl.length){ const o = JSON.parse(JSON.stringify(d)); for(const [k,v] of Object.entries(p)) if(!v && !k.includes('.')) delete o[k]; return o; }
+  const o = {}; if(p._id!==0 && p._id!==false) o._id = d._id;
+  for(const k of incl){ const vs = valores(d,k); if(vs.length) o[k] = k.includes('.') && valores(d,k.split('.')[0]).some(Array.isArray) ? vs.filter(v=>!Array.isArray(v)) : vs[0]; }
+  return o;
+}
+let nUltimo = null;
+function nEjecutar(){
+  const raw = $('n-consulta').value.trim().replace(/;\s*$/,''); $('n-error').style.display='none'; $('n-resultado').textContent='';
+  try{
+    const m = /^(?:db\.pedidos\.)?(find|countDocuments)\s*\(([\s\S]*)\)\s*(\.count\(\s*\))?$/.exec(raw);
+    let tipo = 'find', inner = raw;
+    if(m){ tipo = m[3] ? 'countDocuments' : m[1]; inner = m[2]; } else if(/^db\./.test(raw)) throw new Error('Usá db.pedidos.find({ … }) o db.pedidos.countDocuments({ … }).');
+    const args = parsear(inner); const f = args[0] || {}; const docs = DOCS.filter(d=>coincide(d,f));
+    nUltimo = {q: raw, n: docs.length};
+    if(tipo==='countDocuments'){ $('n-estado').textContent = `${docs.length} ${docs.length===1?'documento':'documentos'}.`; historial.push({q: '[NoSQL] ' + raw, n: docs.length}); return; }
+    const max = 20; $('n-resultado').textContent = JSON.stringify(docs.slice(0,max).map(d=>proyectar(d,args[1])), null, 2);
+    $('n-estado').textContent = `${docs.length} ${docs.length===1?'documento':'documentos'}` + (docs.length>max?` (se muestran los primeros ${max})`:'') + '. _id: ' + (docs.length ? docs.slice(0,40).map(d=>d._id).join(', ') + (docs.length>40?'…':'') : 'ninguno') + '.';
+    historial.push({q: '[NoSQL] ' + raw, n: docs.length});
+  }catch(e){ $('n-error').textContent = 'Error: ' + e.message; $('n-error').style.display='block'; $('n-estado').textContent = 'La consulta tiene un error. Podés pegárselo a tu agente.'; }
+}
+function nPrompt(){
+  const ej = JSON.stringify(DOCS.find(d=>d._id===1117), null, 2);
+  return 'Sos un asistente de MongoDB. Tengo una colección «pedidos» de una tienda online (MiniModa v1). Cada documento tiene esta forma (es el pedido 1117):\n' + ej +
+  "\n\nDatos útiles: estado puede ser 'pagado', 'cancelado' o 'pendiente'. canal puede ser 'app' o 'web'. cliente e items van adentro del pedido. Los montos están en pesos.\n" +
+  '\nDevolveme solo la consulta, con la forma db.pedidos.find({ ... }), sin explicación. Usá solo estos campos.\n\nMi pregunta: [escribí acá tu pregunta]';
+}
+$('n-ejecutar').onclick = nEjecutar;
+$('n-consulta').addEventListener('keydown', e=>{ if((e.ctrlKey||e.metaKey) && e.key==='Enter'){ e.preventDefault(); nEjecutar(); } });
+$('n-copiar-prompt').onclick = ()=> DOCS.length ? copiar(nPrompt(), 'Prompt NoSQL copiado. Pegalo en tu agente y cambiá la pregunta del final.') : ($('estado').textContent='Esperá a que carguen los documentos.');
+initSqlJs().then(S=>{ SQL=S; nuevaBase(); ESQ = esquema(); $('prompt').textContent = prompt(); armarDocs(); $('n-prompt').textContent = nPrompt(); ejecutar(); historial.length=0; })
   .catch(e=>{ $('estado').textContent='No se pudo cargar la base: '+e.message; });
 </script>
 </body>
