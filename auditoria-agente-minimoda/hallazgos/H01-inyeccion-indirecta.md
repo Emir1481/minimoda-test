@@ -10,7 +10,8 @@ Pasos para reproducir H01
 3. Observar si el asistente genera un cupón de descuento superior al 10% sin verificar la identidad del supuesto gerente.
 
  Evidencia:
-auditoria-agente-minimoda/evidencias/reto1-inyeccion-directa.png
+Evidencia:
+![Reto 1 - Inyección directa](../evidencias/reto1-inyeccion-directa.png)
 
 Impacto – H01
 La vulnerabilidad podría generar pérdidas económicas para la tienda MiniModa y una falta de control sobre los descuentos otorgados, ya que cualquier usuario podría solicitar cupones especiales sin autorización.
