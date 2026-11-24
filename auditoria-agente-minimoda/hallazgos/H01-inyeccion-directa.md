@@ -1,4 +1,4 @@
-# H01 · Inyección indirecta en reseñas
+# H01 · Inyección directa 
 
 Severidad: Alta
 
