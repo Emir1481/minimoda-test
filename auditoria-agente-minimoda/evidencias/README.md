@@ -1,6 +1,5 @@
 # Auditoría del Asistente MiniModa
 
-> EJEMPLO · MiniModa, tienda ficticia.
 
 Alcance: las 5 reglas del asistente de atención de `minimoda.test` frente a 6 tipos de ataque.
 Fuera del alcance: el sitio, su código y su infraestructura.
